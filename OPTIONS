@@ -1,0 +1,44 @@
+#Option 1
+obj_X_ACT = ce.BinaryEncoder(cols = ['ACTIVITE'])
+obj_X_ACT.fit_transform(obj_X, Y)
+#Option 2
+
+obj_X_LISPC = ce.OrdinalEncoder(cols = ['LISCPI'])
+obj_X_LISPC.fit_transform(obj_X,Y)
+
+#Option 3
+obj_X["SEGMENT_RB_cat"] = obj_X["SEGMENT_RB"].astype('category').cat.codes
+obj_X.SEGMENT_RB_cat.head()
+
+#Option 4
+obj_X_LOG = pd.get_dummies(obj_X['LOGEMENT'],drop_first=True)
+obj_X_TC = pd.get_dummies(obj_X['TYPE_CARTE'],drop_first=True)
+obj_X_TC.head()
+pd.get_dummies(obj_X, columns=["STATUT_INSEE", "EN_FP"], prefix=["STINS", "EN_FP"]).head()
+
+#option 5
+
+obj_X['CASDEN'] = np.where(obj_X['EN_FP'].str.contains('NN') , 0, 1 )
+obj_X.CASDEN.head()
+
+#Option 6
+X["NB_TRANSACT_5M"].replace(to_replace = np.nan , value = -1,inplace=True)  
+
+
+#Option 7
+X = X.apply(lambda x: (x-1)*(x>1)+x*(x<2)  if x.name in ['NB_CARTES_HDG', 'NB_CRED_IMMO','NB_MRH']  else x)
+
+#Option 8
+X['TRAGE'] = pd.cut(X['AGE'], bins=[17, 24,45,55, float('Inf')], labels=[18,25,46,56])
+
+
+#Option 9
+X[X.select_dtypes(include=['category']).columns] = X[X.select_dtypes(include=['category']).columns].astype('float')
+X[X.select_dtypes(include=['float64','int']).columns]= X.select_dtypes(include=['float64','int']).replace(np.nan, value = 0,inplace=False).copy()
+X[X.select_dtypes(include=[np.object]).columns]= X.select_dtypes(include=[np.object]).replace(np.nan, value = 'NAN',inplace=False).copy()
+
+#Option 10
+X[X.select_dtypes(include=[np.object]).columns]=X.select_dtypes(include=[np.object]).apply(LabelEncoder().fit_transform).copy()
+
+# https://pbpython.com/categorical-encoding.html
+#https://www.datacamp.com/community/tutorials/categorical-data <
